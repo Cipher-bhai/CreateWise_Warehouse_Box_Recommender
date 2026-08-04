@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block title %}{% if object %}Edit Order{% else %}New Order{% endif %} — CrateWise{% endblock %}
+{% block content %}
+<div class="container px-4 py-4" style="max-width:560px;">
+    <a href="{% url 'order-list' %}" class="small d-inline-block mb-3"><i class="bi bi-arrow-left me-1"></i>Back to orders</a>
+    <div class="card stat-card p-4">
+        <h2 class="fw-bold mb-2">{% if object %}Edit Order{% else %}New Order{% endif %}</h2>
+        <p class="text-muted small mb-4">Select the products going out — CrateWise will recommend the cheapest box that fits.</p>
+        {% crispy form %}
+    </div>
+</div>
+{% endblock %}

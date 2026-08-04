@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Order #{{ order.id }} — CrateWise{% endblock %}
+{% block content %}
+<div class="container px-4 py-4" style="max-width:720px;">
+    <a href="{% url 'order-list' %}" class="small d-inline-block mb-3"><i class="bi bi-arrow-left me-1"></i>Back to orders</a>
+    <div class="card stat-card p-4 mb-3">
+        <div class="d-flex justify-content-between align-items-start mb-3">
+            <div>
+                <h2 class="fw-bold mb-1">Order #{{ order.id }} — {{ order.customer_name }}</h2>
+                <span class="badge text-bg-secondary">{{ order.get_status_display }}</span>
+            </div>
+            {% if user.can_manage_catalog %}
+            <div>
+                <a href="{% url 'order-update' order.pk %}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i> Edit</a>
+                <a href="{% url 'order-delete' order.pk %}" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></a>
+            </div>
+            {% endif %}
+        </div>
+
+        <h6 class="fw-bold mt-3">Products in this order</h6>
+        <ul class="list-group list-group-flush mb-3">
+            {% for product in order.products.all %}
+            <li class="list-group-item d-flex justify-content-between">
+                <span>{{ product.name }}</span>
+                <span class="text-muted small">{{ product.length }}×{{ product.width }}×{{ product.height }} cm, {{ product.weight }} kg</span>
+            </li>
+            {% endfor %}
+        </ul>
+
+        <h6 class="fw-bold">Recommended box</h6>
+        {% if order.recommended_box %}
+        <p class="mb-1"><strong>{{ order.recommended_box.name }}</strong> — {{ order.recommended_box.length }}×{{ order.recommended_box.width }}×{{ order.recommended_box.height }} cm, up to {{ order.recommended_box.max_weight }} kg, ₹{{ order.recommended_box.cost }}</p>
+        {% else %}
+        <p class="text-danger mb-1">No box in the catalog fits this shipment.</p>
+        {% endif %}
+
+        {% if order.ai_explanation %}
+        <div class="alert alert-info mt-3 mb-0">
+            <i class="bi bi-stars me-1"></i><strong>AI explanation:</strong> {{ order.ai_explanation }}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

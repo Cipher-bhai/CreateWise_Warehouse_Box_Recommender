@@ -1,0 +1,231 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}CrateWise — Smart Shipping Box Recommender{% endblock %}
+{% block body_class %}landing-body{% endblock %}
+
+{% block content %}
+<nav class="navbar navbar-expand-lg landing-nav">
+    <div class="container px-4">
+        <a class="navbar-brand fw-bold d-flex align-items-center gap-2" href="{% url 'landing' %}">
+            <span class="brand-mark"><i class="bi bi-box-seam-fill"></i></span>
+            CrateWise
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#landingNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="landingNav">
+            <ul class="navbar-nav align-items-lg-center gap-lg-2">
+                <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
+                <li class="nav-item"><a class="nav-link" href="#how-it-works">How it works</a></li>
+                <li class="nav-item"><a class="nav-link" href="#engine">See it work</a></li>
+                {% if user.is_authenticated %}
+                <li class="nav-item"><a class="btn btn-light btn-sm px-3" href="{% url 'dashboard' %}">Go to Dashboard</a></li>
+                {% else %}
+                <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
+                <li class="nav-item"><a class="btn btn-light btn-sm px-3" href="{% url 'signup' %}">Get started free</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-glow"></div>
+    <div class="crate-field" aria-hidden="true">
+        <i class="bi bi-box-seam crate crate-1"></i>
+        <i class="bi bi-box2-fill crate crate-2"></i>
+        <i class="bi bi-box-seam-fill crate crate-3"></i>
+        <i class="bi bi-boxes crate crate-4"></i>
+        <i class="bi bi-box2 crate crate-5"></i>
+        <i class="bi bi-truck crate crate-6"></i>
+    </div>
+    <div class="container hero-content text-center">
+        <h1 class="hero-title reveal reveal-delay-1">
+            Never guess the shipping box <span class="text-gradient">again.</span>
+        </h1>
+        <p class="hero-sub reveal reveal-delay-2">
+            CrateWise scans your product catalog against every box you stock and instantly
+            recommends the cheapest one that actually fits — then explains why, in plain English.
+        </p>
+        <div class="hero-cta reveal reveal-delay-3">
+            {% if user.is_authenticated %}
+            <a href="{% url 'dashboard' %}" class="btn btn-primary btn-lg px-4">Open Dashboard <i class="bi bi-arrow-right ms-1"></i></a>
+            {% else %}
+            <a href="{% url 'signup' %}" class="btn btn-primary btn-lg px-4">Start free <i class="bi bi-arrow-right ms-1"></i></a>
+            <a href="{% url 'login' %}" class="btn btn-outline-light btn-lg px-4">I have an account</a>
+            {% endif %}
+        </div>
+
+        <div class="hero-stats reveal reveal-delay-3">
+            <div class="stat">
+                <span class="stat-number" data-count="100">0</span><span class="stat-suffix">%</span>
+                <span class="stat-label">Free &amp; open source</span>
+            </div>
+            <div class="stat">
+                <span class="stat-number" data-count="3">0</span>
+                <span class="stat-label">Role-based access levels</span>
+            </div>
+            <div class="stat">
+                <span class="stat-number" data-count="80">0</span><span class="stat-suffix">%+</span>
+                <span class="stat-label">Automated test coverage</span>
+            </div>
+        </div>
+    </div>
+    <div class="hero-scroll-cue reveal reveal-delay-3"><i class="bi bi-chevron-down"></i></div>
+</section>
+
+<!-- FEATURES -->
+<section id="features" class="section-dark py-6">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="section-eyebrow reveal">Why CrateWise</span>
+            <h2 class="section-title reveal">Built for warehouses that hate wasted packaging spend</h2>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4 reveal">
+                <div class="feature-card h-100">
+                    <div class="feature-icon"><i class="bi bi-cpu"></i></div>
+                    <h3>Deterministic recommendation engine</h3>
+                    <p>Every product is matched against every box using a clear must-fit rule, cheapest-wins logic, and a wasted-volume tiebreaker — fully unit tested.</p>
+                </div>
+            </div>
+            <div class="col-md-4 reveal">
+                <div class="feature-card h-100">
+                    <div class="feature-icon"><i class="bi bi-stars"></i></div>
+                    <h3>AI-generated explanations</h3>
+                    <p>Every recommendation ships with a one-sentence, human-readable explanation — powered by a free-tier LLM with an automatic offline fallback.</p>
+                </div>
+            </div>
+            <div class="col-md-4 reveal">
+                <div class="feature-card h-100">
+                    <div class="feature-icon"><i class="bi bi-shield-lock"></i></div>
+                    <h3>Role-based access</h3>
+                    <p>Admins, Managers, and Staff each see exactly what they need — from full user management down to simple order creation.</p>
+                </div>
+            </div>
+            <div class="col-md-4 reveal">
+                <div class="feature-card h-100">
+                    <div class="feature-icon"><i class="bi bi-bar-chart-line"></i></div>
+                    <h3>Live dashboard &amp; charts</h3>
+                    <p>Order status, box usage, and catalog size at a glance — rendered with Chart.js from real-time queryset aggregation.</p>
+                </div>
+            </div>
+            <div class="col-md-4 reveal">
+                <div class="feature-card h-100">
+                    <div class="feature-icon"><i class="bi bi-plug"></i></div>
+                    <h3>REST API included</h3>
+                    <p>A full Django REST Framework API for Products, Boxes, and Orders — ready to plug into a mobile app or another service.</p>
+                </div>
+            </div>
+            <div class="col-md-4 reveal">
+                <div class="feature-card h-100">
+                    <div class="feature-icon"><i class="bi bi-clipboard2-check"></i></div>
+                    <h3>Tested &amp; documented</h3>
+                    <p>36+ automated tests covering models, the algorithm, auth, and CRUD permissions, with real coverage reports checked in.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how-it-works" class="section-light py-6">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="section-eyebrow reveal">The flow</span>
+            <h2 class="section-title reveal">From order to recommendation in one click</h2>
+        </div>
+        <div class="timeline">
+            <div class="timeline-step reveal">
+                <div class="timeline-index">01</div>
+                <h4>Log products &amp; boxes</h4>
+                <p>Add your product dimensions and the boxes you stock, with cost and weight limits.</p>
+            </div>
+            <div class="timeline-step reveal">
+                <div class="timeline-index">02</div>
+                <h4>Create an order</h4>
+                <p>Pick the products going out. CrateWise combines their footprint automatically.</p>
+            </div>
+            <div class="timeline-step reveal">
+                <div class="timeline-index">03</div>
+                <h4>Get the cheapest fit</h4>
+                <p>The engine finds every box that fits, then ranks by cost and wasted space.</p>
+            </div>
+            <div class="timeline-step reveal">
+                <div class="timeline-index">04</div>
+                <h4>Read the AI explanation</h4>
+                <p>A plain-English sentence explains the pick — ready to show a customer or teammate.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ENGINE DEMO -->
+<section id="engine" class="section-dark py-6 engine-section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="section-eyebrow reveal">See it in action</span>
+            <h2 class="section-title reveal">Watch the algorithm pick a box</h2>
+            <p class="engine-sub reveal">Shipment in: a 20 × 15 × 10 cm item, 2 kg. Here's how CrateWise ranks every box in the catalog.</p>
+        </div>
+
+        <div class="engine-grid reveal">
+            <div class="engine-card">
+                <div class="engine-card-head">
+                    <i class="bi bi-x-circle engine-icon-no"></i>
+                    <span>XL Crate</span>
+                </div>
+                <ul class="engine-specs">
+                    <li>70 × 60 × 50 cm · max 25 kg</li>
+                    <li>₹55</li>
+                </ul>
+                <span class="engine-tag tag-no">Fits, but wildly overpriced</span>
+            </div>
+
+            <div class="engine-card">
+                <div class="engine-card-head">
+                    <i class="bi bi-dash-circle engine-icon-maybe"></i>
+                    <span>Medium Box</span>
+                </div>
+                <ul class="engine-specs">
+                    <li>35 × 30 × 20 cm · max 10 kg</li>
+                    <li>₹20</li>
+                </ul>
+                <span class="engine-tag tag-maybe">Fits, not the cheapest</span>
+            </div>
+
+            <div class="engine-card engine-winner">
+                <div class="engine-ribbon"><i class="bi bi-check-lg"></i> Best pick</div>
+                <div class="engine-card-head">
+                    <i class="bi bi-check-circle-fill engine-icon-yes"></i>
+                    <span>Small Box</span>
+                </div>
+                <ul class="engine-specs">
+                    <li>25 × 20 × 15 cm · max 5 kg</li>
+                    <li>₹12</li>
+                </ul>
+                <span class="engine-tag tag-yes">Cheapest box that fits</span>
+            </div>
+        </div>
+
+        <p class="engine-footnote reveal">
+            <i class="bi bi-stars me-1"></i>
+            AI explanation: <em>"Small Box was selected because it's the lowest-cost box that fits the 20×15×10 cm, 2 kg shipment within its 5 kg limit."</em>
+        </p>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-band">
+    <div class="container text-center reveal">
+        <h2 class="mb-3">Ready to stop overpaying for boxes?</h2>
+        <p class="mb-4">Create a free account and get your first recommendation in under a minute.</p>
+        {% if user.is_authenticated %}
+        <a href="{% url 'dashboard' %}" class="btn btn-light btn-lg px-4">Open Dashboard</a>
+        {% else %}
+        <a href="{% url 'signup' %}" class="btn btn-light btn-lg px-4">Create free account</a>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

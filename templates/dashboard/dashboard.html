@@ -1,0 +1,237 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% block title %}Dashboard — CrateWise{% endblock %}
+{% block content %}
+<div class="container-fluid px-4 py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+            <h2 class="fw-bold mb-1">
+                Welcome back, {{ user.first_name|default:user.username }}
+                <span class="badge role-badge role-{{ user.role }} align-middle ms-1">{{ user.get_role_display }}</span>
+            </h2>
+            {% if is_admin %}
+            <p class="text-muted mb-0">Full warehouse overview — every order, every user, every box.</p>
+            {% elif is_manager %}
+            <p class="text-muted mb-0">Full catalog &amp; order overview for the warehouse.</p>
+            {% else %}
+            <p class="text-muted mb-0">Here's what's on your plate — your own orders only.</p>
+            {% endif %}
+        </div>
+        <a href="{% url 'order-create' %}" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>New Order</a>
+    </div>
+
+    {% if is_staff_role %}
+    {# ---------------------------------------------------------------- #}
+    {# STAFF: a lightweight, personal dashboard — just their own work.   #}
+    {# ---------------------------------------------------------------- #}
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card stat-card p-3">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="feature-icon" style="background:linear-gradient(135deg,#f5576c,#f093fb);"><i class="bi bi-receipt"></i></div>
+                    <div>
+                        <div class="text-muted small">My orders</div>
+                        <div class="fs-3 fw-bold">{{ order_count|intcomma }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card stat-card p-3">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="feature-icon" style="background:linear-gradient(135deg,#4f6df5,#8f5bf0);"><i class="bi bi-box"></i></div>
+                    <div>
+                        <div class="text-muted small">Products in catalog</div>
+                        <div class="fs-3 fw-bold">{{ product_count|intcomma }}</div>
+                        <a href="{% url 'product-list' %}" class="small">Browse <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card stat-card p-3">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="feature-icon" style="background:linear-gradient(135deg,#17d3c2,#4f6df5);"><i class="bi bi-archive"></i></div>
+                    <div>
+                        <div class="text-muted small">Boxes in stock</div>
+                        <div class="fs-3 fw-bold">{{ box_count|intcomma }}</div>
+                        <a href="{% url 'box-list' %}" class="small">Browse <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if order_count > 0 %}
+    <div class="card stat-card p-3 mb-4" style="max-width:420px;">
+        <h6 class="fw-bold mb-3">My orders by status</h6>
+        <canvas id="statusChart" height="200"></canvas>
+    </div>
+    {% endif %}
+
+    <div class="card stat-card p-3">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="fw-bold mb-0">{{ orders_heading }}</h6>
+            <a href="{% url 'order-list' %}" class="small">View all <i class="bi bi-arrow-right"></i></a>
+        </div>
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead class="table-light">
+                    <tr><th>Customer</th><th>Status</th><th>Recommended box</th><th>Created</th></tr>
+                </thead>
+                <tbody>
+                    {% for order in latest_orders %}
+                    <tr>
+                        <td><a href="{{ order.get_absolute_url }}">{{ order.customer_name }}</a></td>
+                        <td><span class="badge text-bg-secondary">{{ order.get_status_display }}</span></td>
+                        <td>{{ order.recommended_box.name|default:"—" }}</td>
+                        <td class="text-muted small">{{ order.created_at|naturaltime }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="4" class="text-center text-muted py-4">You haven't created any orders yet — <a href="{% url 'order-create' %}">create your first one</a>.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {% else %}
+    {# ---------------------------------------------------------------- #}
+    {# ADMIN / MANAGER: full warehouse-wide overview.                    #}
+    {# ---------------------------------------------------------------- #}
+    <div class="row g-3 mb-4">
+        <div class="col-md-{% if is_admin %}3{% else %}4{% endif %}">
+            <div class="card stat-card p-3">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="feature-icon" style="background:linear-gradient(135deg,#4f6df5,#8f5bf0);"><i class="bi bi-box"></i></div>
+                    <div>
+                        <div class="text-muted small">Products</div>
+                        <div class="fs-3 fw-bold">{{ product_count|intcomma }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-{% if is_admin %}3{% else %}4{% endif %}">
+            <div class="card stat-card p-3">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="feature-icon" style="background:linear-gradient(135deg,#17d3c2,#4f6df5);"><i class="bi bi-archive"></i></div>
+                    <div>
+                        <div class="text-muted small">Boxes</div>
+                        <div class="fs-3 fw-bold">{{ box_count|intcomma }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-{% if is_admin %}3{% else %}4{% endif %}">
+            <div class="card stat-card p-3">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="feature-icon" style="background:linear-gradient(135deg,#f5576c,#f093fb);"><i class="bi bi-receipt"></i></div>
+                    <div>
+                        <div class="text-muted small">Orders</div>
+                        <div class="fs-3 fw-bold">{{ order_count|intcomma }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% if is_admin %}
+        <div class="col-md-3">
+            <a href="{% url 'user-list' %}" class="text-decoration-none">
+                <div class="card stat-card p-3">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="feature-icon" style="background:linear-gradient(135deg,#764ba2,#667eea);"><i class="bi bi-people"></i></div>
+                        <div>
+                            <div class="text-muted small">Users</div>
+                            <div class="fs-3 fw-bold text-body">{{ user_count|intcomma }}</div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-6">
+            <div class="card stat-card p-3 h-100">
+                <h6 class="fw-bold mb-3">Orders by status</h6>
+                <canvas id="statusChart" height="220"></canvas>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card stat-card p-3 h-100">
+                <h6 class="fw-bold mb-3">Most recommended boxes</h6>
+                <canvas id="boxChart" height="220"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="card stat-card p-3">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="fw-bold mb-0">{{ orders_heading }}</h6>
+            <a href="{% url 'order-list' %}" class="small">View all <i class="bi bi-arrow-right"></i></a>
+        </div>
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead class="table-light">
+                    <tr><th>Customer</th><th>Status</th><th>Recommended box</th><th>Created</th></tr>
+                </thead>
+                <tbody>
+                    {% for order in latest_orders %}
+                    <tr>
+                        <td><a href="{{ order.get_absolute_url }}">{{ order.customer_name }}</a></td>
+                        <td><span class="badge text-bg-secondary">{{ order.get_status_display }}</span></td>
+                        <td>{{ order.recommended_box.name|default:"—" }}</td>
+                        <td class="text-muted small">{{ order.created_at|naturaltime }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="4" class="text-center text-muted py-4">No orders yet — <a href="{% url 'order-create' %}">create the first one</a>.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var statusCtx = document.getElementById('statusChart');
+    if (statusCtx) {
+        new Chart(statusCtx, {
+            type: 'doughnut',
+            data: {
+                labels: {{ status_chart_labels|safe }},
+                datasets: [{
+                    data: {{ status_chart_data|safe }},
+                    backgroundColor: ['#4f6df5', '#17d3c2', '#f5576c'],
+                    borderWidth: 0,
+                }]
+            },
+            options: { plugins: { legend: { position: 'bottom' } } }
+        });
+    }
+
+    var boxCtx = document.getElementById('boxChart');
+    if (boxCtx) {
+        new Chart(boxCtx, {
+            type: 'bar',
+            data: {
+                labels: {{ box_chart_labels|safe }},
+                datasets: [{
+                    label: 'Times recommended',
+                    data: {{ box_chart_data|safe }},
+                    backgroundColor: '#8f5bf0',
+                    borderRadius: 6,
+                }]
+            },
+            options: {
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

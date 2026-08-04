@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Orders — CrateWise{% endblock %}
+{% block content %}
+<div class="container-fluid px-4 py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <h2 class="fw-bold mb-0">Orders</h2>
+        <a href="{% url 'order-create' %}" class="btn btn-primary"><i class="bi bi-plus-lg me-1"></i>New Order</a>
+    </div>
+
+    <form method="get" class="d-flex gap-2 mb-3 flex-wrap">
+        <input type="text" name="q" class="form-control" style="max-width:260px;" placeholder="Search by customer..." value="{{ request.GET.q }}">
+        <select name="status" class="form-select" style="max-width:180px;" onchange="this.form.submit()">
+            <option value="">All statuses</option>
+            {% for value, label in status_choices %}
+            <option value="{{ value }}" {% if request.GET.status == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+        <button class="btn btn-outline-secondary" type="submit"><i class="bi bi-search"></i></button>
+    </form>
+
+    <div class="card stat-card p-3">
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead class="table-light">
+                    <tr><th>#</th><th>Customer</th><th>Status</th><th>Recommended box</th><th>Created</th><th></th></tr>
+                </thead>
+                <tbody>
+                    {% for order in object_list %}
+                    <tr>
+                        <td>{{ order.id }}</td>
+                        <td><a href="{{ order.get_absolute_url }}">{{ order.customer_name }}</a></td>
+                        <td><span class="badge text-bg-secondary">{{ order.get_status_display }}</span></td>
+                        <td>{{ order.recommended_box.name|default:"No fit found" }}</td>
+                        <td class="text-muted small">{{ order.created_at|date:"M d, Y" }}</td>
+                        <td class="text-end">
+                            {% if user.can_manage_catalog %}
+                            <a href="{% url 'order-update' order.pk %}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i></a>
+                            <a href="{% url 'order-delete' order.pk %}" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="6" class="text-center text-muted py-4">No orders yet.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {% if is_paginated %}
+    <nav class="mt-3">
+        <ul class="pagination">
+            {% if page_obj.has_previous %}<li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>{% endif %}
+            <li class="page-item disabled"><span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span></li>
+            {% if page_obj.has_next %}<li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>{% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %}

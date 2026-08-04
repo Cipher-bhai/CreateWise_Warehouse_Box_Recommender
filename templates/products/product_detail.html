@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}{{ product.name }} — CrateWise{% endblock %}
+{% block content %}
+<div class="container px-4 py-4" style="max-width:640px;">
+    <a href="{% url 'product-list' %}" class="small d-inline-block mb-3"><i class="bi bi-arrow-left me-1"></i>Back to products</a>
+    <div class="card stat-card p-4">
+        <div class="d-flex justify-content-between align-items-start mb-3">
+            <h2 class="fw-bold mb-0">{{ product.name }}</h2>
+            {% if user.can_manage_catalog %}
+            <div>
+                <a href="{% url 'product-update' product.pk %}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i> Edit</a>
+                <a href="{% url 'product-delete' product.pk %}" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></a>
+            </div>
+            {% endif %}
+        </div>
+        <dl class="row mb-0">
+            <dt class="col-sm-4 text-muted">Dimensions</dt><dd class="col-sm-8">{{ product.length }} × {{ product.width }} × {{ product.height }} cm</dd>
+            <dt class="col-sm-4 text-muted">Volume</dt><dd class="col-sm-8">{{ product.volume }} cm³</dd>
+            <dt class="col-sm-4 text-muted">Weight</dt><dd class="col-sm-8">{{ product.weight }} kg</dd>
+            <dt class="col-sm-4 text-muted">Added</dt><dd class="col-sm-8">{{ product.created_at|date:"M d, Y" }}</dd>
+        </dl>
+    </div>
+</div>
+{% endblock %}
