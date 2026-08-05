@@ -4,7 +4,7 @@ Never guess the shipping box again. CrateWise scans an order's products
 against every box in stock and recommends the cheapest one that actually
 fits — then explains why, in plain English.
 
-🔗 **Live demo:** https://cratewise.onrender.com/
+🔗 **Live demo:** https://createwise-warehouse-box-recommender.onrender.com/
 🔗 **Repo:** https://github.com/Cipher-bhai/CreateWise_Warehouse_Box_Recommender
 
 ![CrateWise landing page](docs/screenshots/01-landing-hero.png)
