@@ -75,9 +75,9 @@ Visit `http://127.0.0.1:8000/`.
 
 | Username | Password | Role |
 |---|---|---|
-| `demo_admin` | `demopass123` | Admin |
-| `demo_manager` | `demopass123` | Manager |
-| `demo_staff` | `demopass123` | Staff |
+| `demo_admin` | `ChangeMe123!` | Admin |
+| `demo_manager` | `ChangeMe123!` | Manager |
+| `demo_staff` | `ChangeMe123!` | Staff |
 
 ### AI explanations (optional)
 
